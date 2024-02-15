@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="myButton">click me within 3 seconds</button>
+    <button id="yesButton">Yes</button>
+    <button id="noButton">No</button>
+    <p id="result"></p>
+    <img id="resultImage" style="display: none;" src="" alt="Result Image">
+
+    <script>
+        /*
+        const myTimeout = setTimeout(()=>{
+            document.querySelector("#result").innerHTML = "You didn't click the button."
+            document.body.style.backgroundColor = 'Red';
+        }, 3000);
+
+        document.querySelector("#myButton").addEventListener('click', () => {
+            clearTimeout(myTimeout);
+            document.querySelector("#result").innerHTML = "Thank You.";
+            document.body.style.backgroundColor = 'Green';
+        })
+        */
+
+        const myPromise = new Promise((resolve, reject) => {
+            const button = document.getElementById('myButton');
+            button.addEventListener('click', () => {
+                resolve('Thank You.');
+            });
+            setTimeout(() => {
+                reject("You didn't click the button.");
+            }, 3000);
+        })
+
+        console.log(myPromise);
+
+        myPromise
+            .then(result => {
+                document.querySelector("result").innerHTML = result;
+                document.body.style.backgroundColor = 'Green';
+        })
+            .catch(error => {
+                document.getElementById("result").innerHTML = error;
+                document.body.style.backgroundColor = 'Red';
+        });
+            document.getElementById('yesButton').addEventListener('click', () => {
+                document.getElementById('result').innerHTML = 'You choose Yes.';
+                document.getElementById('resultImage').src = 'WhatsApp Image 2022-10-12 at 18.32.53.jpeg'; 
+                document.getElementById('resultImage').style.display = 'block';
+        });
+            document.getElementById('noButton').addEventListener('click', () => {
+                document.getElementById('result').innerHTML = 'You choose No.';
+                document.getElementById('resultImage').src = '63ea22ef63581880ffbb0958dac8b98f.jpeg';
+                document.getElementById('resultImage').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Card Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <style>
+        /* Add some basic styling for the Pokémon card */
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #pokemon-container {
+            display: flex;
+            justify-content: space-around;
+            max-width: 360px;
+            position: relative;
+        }
+
+        .pokemon-card {
+            border: 2px solid gray;
+            border-radius: 8px;
+            margin: 10px;
+            padding: 10px;
+            text-align: center;
+            opacity: 0; 
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .pokemon-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+        }
+
+        .pokemon-details {
+            margin-top: 10px;
+        }
+
+        .pokemon-stats div {
+            margin: 5px 0;
+        }
+
+        .arrow {
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #left {
+            left: 10px;
+        }
+
+        #right {
+            right: 10px;
+        }
+
+        #loading-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        .animate__animated.animate__fadeIn {
+            animation: fadeIn 1s forwards;
+        }
+
+        .animate__animated.animate__fadeOut {
+            animation: fadeOut 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-container">
+        <div class="animate__animated" id="loading-spinner">Loading...</div>
+        <div id="pokemon-container"></div>
+    </div>
+
+    <span class="arrow" id="left">◀️</span>
+    <span class="arrow" id="right">▶️</span>
+
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
+    <script id="pokemon-template" type="text/x-handlebars-template">
+        <div class="pokemon-card animate__animated animate__fadeIn">
+            <img class="pokemon-image" src="{{image}}" alt="{{name}} Image">
+            <div class="pokemon-details">
+                <div class="pokemon-name">{{name}}</div>
+                <div class="pokemon-type">{{type}}</div>
+                <div class="pokemon-stats">
+                    <div>HP: {{stats.hp}}</div>
+                    <div>Attack: {{stats.attack}}</div>
+                    <div>Defense: {{stats.defense}}</div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script>
+        let currentPokemonId = 1;
+
+        async function fetchPokemonData(pokemonId) {
+            try {
+                const url = `https://pokeapi.co/api/v2/pokemon/${pokemonId}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                return {
+                    name: data.name,
+                    image: data.sprites.front_default,
+                    type: data.types.map(type => type.type.name).join(' / '),
+                    stats: {
+                        hp: data.stats.find(stat => stat.stat.name === 'hp').base_stat,
+                        attack: data.stats.find(stat => stat.stat.name === 'attack').base_stat,
+                        defense: data.stats.find(stat => stat.stat.name === 'defense').base_stat
+                    }
+                };
+            } catch (error) {
+                console.error('Error fetching Pokémon data:', error);
+                return null;
+            }
+        }
+
+        async function displayThreePokemons(startId) {
+            const container = document.getElementById('pokemon-container');
+            container.innerHTML = ''; 
+
+            const loadingContainer = document.getElementById('loading-container');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            loadingContainer.style.display = 'block';
+            loadingSpinner.classList.add('animate__fadeIn');
+
+            for (let i = startId; i < startId + 3; i++) {
+                const pokemonData = await fetchPokemonData(i);
+
+                if (pokemonData) {
+                    const source = document.getElementById('pokemon-template').innerHTML;
+                    const template = Handlebars.compile(source);
+                    const html = template(pokemonData);
+
+                    const card = document.createElement('div');
+                    card.className = 'pokemon-card';
+                    card.innerHTML = html;
+                    container.appendChild(card);
+
+                    setTimeout(() => {
+                        card.style.opacity = 1;
+                    }, 50);
+                }
+            }
+
+            setTimeout(() => {
+                loadingSpinner.classList.remove('animate__fadeIn');
+                loadingSpinner.classList.add('animate__fadeOut');
+                setTimeout(() => {
+                    loadingContainer.style.display = 'none';
+                    loadingSpinner.classList.remove('animate__fadeOut');
+                }, 500);
+            }, 500);
+        }
+
+        document.querySelectorAll(".arrow").forEach(arrow => {
+            arrow.addEventListener('click', () => {
+                if (arrow.id === 'left') {
+                    if (currentPokemonId > 1) {
+                        currentPokemonId -= 3;
+                        displayThreePokemons(currentPokemonId);
+                    }
+                } else if (arrow.id === 'right') {
+                    currentPokemonId += 3;
+                    displayThreePokemons(currentPokemonId);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayThreePokemons(currentPokemonId);
+        });
+    </script>
+</body>
+</html>
