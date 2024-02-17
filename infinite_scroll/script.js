@@ -4,7 +4,7 @@ let offset = 0;
 const limit = 20;
 
 async function fetchPokemon() {
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon?offset=${0}&limit=${20}');
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}');
     const data = await response.json();
     offset += limit;
     pokemonsArr = [];
