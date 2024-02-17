@@ -1,4 +1,4 @@
-div card {
+div.card {
     display: flex;
     width: 370px;
     height: 200px;
