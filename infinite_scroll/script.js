@@ -42,4 +42,11 @@ document.querySelector("button").addEventListener('click', async () => {
     renderPokemon(pokemonList);
 })
 
+window.addEventListener('scroll', async () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        const pokemonList = await fetchPokemon();
+        renderPokemon(pokemonList);
+    }
+});
+
 initialLoad();
