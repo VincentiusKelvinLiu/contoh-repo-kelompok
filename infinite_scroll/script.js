@@ -23,3 +23,23 @@ async function fetchPokemon() {
     });
     return { pokemons : pokemonsArr };
 }
+
+function renderPokemon(pokemonList) {
+    const container = document.getElementById('content');
+    const html = pokemonTemplate(pokemonList);
+    container.insertAdjacentHTML('beforeend', html);
+}
+
+async function initialLoad() {
+    const pokemonList = await fetchPokemon();
+    renderPokemon(pokemonList);
+}
+
+
+
+document.querySelector("button").addEventListener('click', async () => {
+    const pokemonList = await fetchPokemon();
+    renderPokemon(pokemonList);
+})
+
+initialLoad();
