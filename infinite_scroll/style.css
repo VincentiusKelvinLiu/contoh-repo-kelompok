@@ -10,6 +10,10 @@ div card {
     animation: bounce 0.3s;
 }
 
+div.card:hover {
+    transform: scale(1.05);
+}
+
 div.card > div.left {
     width: 150px;
     height: 100px;
