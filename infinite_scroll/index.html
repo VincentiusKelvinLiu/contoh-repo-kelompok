@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script id="pokeCard" type="text/x-handlebars-template">
+        {{#each pokemons}}
+        <div class="card">
+            <div class="left" style="background-image: url('{{imageUrl}}');"></div>
+            <div class="right">
+                <h1 class="poke-name">{{name}}</h1>
+                <a class="poke-api" href="{{url}}" target="_blank">API URL</a>
+            </div>
+        </div>
+        {{/each}}    
+    </script>
+</body>
+</html>
