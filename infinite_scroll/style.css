@@ -10,6 +10,16 @@ div card {
     animation: bounce 0.3s;
 }
 
+div.card > div.left {
+    width: 150px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+
+
 @keyframes bounce {
     0% {
         transform: scale(0.9);
